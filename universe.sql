@@ -44,6 +44,41 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: asteroids; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.asteroids (
+    asteroids_id integer NOT NULL,
+    name character varying(15) NOT NULL,
+    orbit character varying(10)
+);
+
+
+ALTER TABLE public.asteroids OWNER TO postgres;
+
+--
+-- Name: asteroids_asteroid_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.asteroids_asteroid_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.asteroids_asteroid_id_seq OWNER TO postgres;
+
+--
+-- Name: asteroids_asteroid_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.asteroids_asteroid_id_seq OWNED BY public.asteroids.asteroids_id;
+
+
+--
 -- Name: galaxy; Type: TABLE; Schema: public; Owner: freecodecamp
 --
 
@@ -116,43 +151,6 @@ ALTER TABLE public.moon_moon_id_seq OWNER TO freecodecamp;
 --
 
 ALTER SEQUENCE public.moon_moon_id_seq OWNED BY public.moon.moon_id;
-
-
---
--- Name: moon_types; Type: TABLE; Schema: public; Owner: freecodecamp
---
-
-CREATE TABLE public.moon_types (
-    moon_type_id integer NOT NULL,
-    type character varying(10) NOT NULL,
-    moon character varying(15),
-    moon_id integer NOT NULL,
-    name character varying(15)
-);
-
-
-ALTER TABLE public.moon_types OWNER TO freecodecamp;
-
---
--- Name: moon_types_moon_type_id_seq; Type: SEQUENCE; Schema: public; Owner: freecodecamp
---
-
-CREATE SEQUENCE public.moon_types_moon_type_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.moon_types_moon_type_id_seq OWNER TO freecodecamp;
-
---
--- Name: moon_types_moon_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: freecodecamp
---
-
-ALTER SEQUENCE public.moon_types_moon_type_id_seq OWNED BY public.moon_types.moon_type_id;
 
 
 --
@@ -231,6 +229,13 @@ ALTER SEQUENCE public.star_star_id_seq OWNED BY public.star.star_id;
 
 
 --
+-- Name: asteroids asteroids_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.asteroids ALTER COLUMN asteroids_id SET DEFAULT nextval('public.asteroids_asteroid_id_seq'::regclass);
+
+
+--
 -- Name: galaxy galaxy_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
 --
 
@@ -245,13 +250,6 @@ ALTER TABLE ONLY public.moon ALTER COLUMN moon_id SET DEFAULT nextval('public.mo
 
 
 --
--- Name: moon_types moon_type_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.moon_types ALTER COLUMN moon_type_id SET DEFAULT nextval('public.moon_types_moon_type_id_seq'::regclass);
-
-
---
 -- Name: planet planet_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
 --
 
@@ -263,6 +261,15 @@ ALTER TABLE ONLY public.planet ALTER COLUMN planet_id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.star ALTER COLUMN star_id SET DEFAULT nextval('public.star_star_id_seq'::regclass);
+
+
+--
+-- Data for Name: asteroids; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.asteroids VALUES (1, '1Ceres', 'Mars-Jup');
+INSERT INTO public.asteroids VALUES (2, '4 Vesta', 'Main belt');
+INSERT INTO public.asteroids VALUES (3, 'Apophis', 'Earth app');
 
 
 --
@@ -304,15 +311,6 @@ INSERT INTO public.moon VALUES (20, 'Nereid', 8, 'Neptune', 340.00, true);
 
 
 --
--- Data for Name: moon_types; Type: TABLE DATA; Schema: public; Owner: freecodecamp
---
-
-INSERT INTO public.moon_types VALUES (1, 'Icy', 'Enceladus', 1, 'Icy');
-INSERT INTO public.moon_types VALUES (3, 'Icy', 'Europa', 5, 'Icy');
-INSERT INTO public.moon_types VALUES (4, 'Volcanic', 'Io', 4, 'Volcanic');
-
-
---
 -- Data for Name: planet; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
@@ -344,6 +342,13 @@ INSERT INTO public.star VALUES (6, 'Sun', 0.00, 1, 'yellow');
 
 
 --
+-- Name: asteroids_asteroid_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.asteroids_asteroid_id_seq', 3, true);
+
+
+--
 -- Name: galaxy_galaxy_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
 --
 
@@ -358,13 +363,6 @@ SELECT pg_catalog.setval('public.moon_moon_id_seq', 20, true);
 
 
 --
--- Name: moon_types_moon_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
---
-
-SELECT pg_catalog.setval('public.moon_types_moon_type_id_seq', 4, true);
-
-
---
 -- Name: planet_planet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
 --
 
@@ -376,6 +374,22 @@ SELECT pg_catalog.setval('public.planet_planet_id_seq', 13, true);
 --
 
 SELECT pg_catalog.setval('public.star_star_id_seq', 6, true);
+
+
+--
+-- Name: asteroids asteroids_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.asteroids
+    ADD CONSTRAINT asteroids_name_key UNIQUE (name);
+
+
+--
+-- Name: asteroids asteroids_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.asteroids
+    ADD CONSTRAINT asteroids_pkey PRIMARY KEY (asteroids_id);
 
 
 --
@@ -408,14 +422,6 @@ ALTER TABLE ONLY public.moon
 
 ALTER TABLE ONLY public.moon
     ADD CONSTRAINT moon_pkey PRIMARY KEY (moon_id);
-
-
---
--- Name: moon_types moon_types_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.moon_types
-    ADD CONSTRAINT moon_types_pkey PRIMARY KEY (moon_type_id, moon_id);
 
 
 --
@@ -459,14 +465,6 @@ ALTER TABLE ONLY public.moon
 
 
 --
--- Name: moon_types moon_types_moon_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
---
-
-ALTER TABLE ONLY public.moon_types
-    ADD CONSTRAINT moon_types_moon_id_fkey FOREIGN KEY (moon_id) REFERENCES public.moon(moon_id);
-
-
---
 -- Name: planet planet_star_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
@@ -483,6 +481,28 @@ ALTER TABLE ONLY public.star
 
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT USAGE ON SCHEMA public TO freecodecamp;
+
+
+--
+-- Name: TABLE asteroids; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT ON TABLE public.asteroids TO freecodecamp;
+
+
+--
+-- Name: SEQUENCE asteroids_asteroid_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT ON SEQUENCE public.asteroids_asteroid_id_seq TO freecodecamp;
+
+
+--
 -- PostgreSQL database dump complete
 --
+
 
